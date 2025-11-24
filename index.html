@@ -20,72 +20,34 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#3b82f6',
-                        dark: {
-                            bg: '#0f172a',
-                            card: '#1e293b',
-                            input: '#334155',
-                            text: '#f8fafc'
-                        }
-                    }
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: { primary: '#3b82f6', dark: { bg: '#0f172a', card: '#1e293b', input: '#334155', text: '#f8fafc' } }
                 }
             }
         }
     </script>
-
-    <!-- Font & Animations -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-        
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        body { font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        
-        /* Glassmorphism Classes */
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        .dark .glass {
-            background: rgba(30, 41, 59, 0.7);
-        }
+        /* Progress Bar Animation */
+        .progress-bar { transition: width 0.5s ease-in-out; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-300">
-
 <div id="root"></div>
 
 <script type="text/babel">
 
     // --- ICONS ---
     const Icons = {
+        // Yeni 3D Yazıcı İkonu
+        Printer: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>,
         Cube: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>,
         Zap: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
         Clock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
@@ -104,21 +66,19 @@
         AlertCircle: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
         Moon: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>,
         Sun: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
-        Trending: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        Plus: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>,
+        History: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+        Trending: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+        Tool: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+        Currency: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
     };
 
-    // --- SHARED DATA & HELPERS ---
     const formatMoney = (val) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(val);
     const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
     // --- COMPONENTS ---
-
     const ThemeToggle = ({ isDark, toggle }) => (
-        <button 
-            onClick={toggle}
-            className="p-2 rounded-full transition-colors bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300"
-            title={isDark ? "Aydınlık Mod" : "Karanlık Mod"}
-        >
+        <button onClick={toggle} className="p-2 rounded-full transition-colors bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300">
             {isDark ? <Icons.Sun /> : <Icons.Moon />}
         </button>
     );
@@ -127,25 +87,9 @@
         <div className="relative group">
             <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">{label}</label>
             <div className={`relative flex items-center ${disabled ? 'opacity-60' : ''}`}>
-                {Icon && (
-                    <div className="absolute left-3 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                        <Icon />
-                    </div>
-                )}
-                <input
-                    type={type}
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    step={step}
-                    disabled={disabled}
-                    className={`w-full bg-white dark:bg-dark-input text-slate-900 dark:text-white text-lg font-medium rounded-xl border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-0 outline-none py-3.5 ${Icon ? 'pl-10' : 'pl-4'} pr-12 shadow-sm transition-all`}
-                    placeholder="0"
-                />
-                {unit && (
-                    <div className="absolute right-4 text-sm font-semibold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md">
-                        {unit}
-                    </div>
-                )}
+                {Icon && <div className="absolute left-3 text-slate-400 group-focus-within:text-blue-500 transition-colors"><Icon /></div>}
+                <input type={type} value={value} onChange={(e) => onChange(e.target.value)} step={step} disabled={disabled} className={`w-full bg-white dark:bg-dark-input text-slate-900 dark:text-white text-lg font-medium rounded-xl border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-0 outline-none py-3.5 ${Icon ? 'pl-10' : 'pl-4'} pr-12 shadow-sm transition-all`} placeholder="0" />
+                {unit && <div className="absolute right-4 text-sm font-semibold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md">{unit}</div>}
             </div>
         </div>
     );
@@ -157,7 +101,7 @@
         </div>
     );
 
-    // G-Code Dropzone Component
+    // G-Code Dropzone
     const GCodeDropZone = ({ onFileLoaded }) => {
         const [isDragOver, setIsDragOver] = React.useState(false);
         const [fileName, setFileName] = React.useState(null);
@@ -171,9 +115,8 @@
             let filamentGrams = 0;
             const curaTime = text.match(/;TIME:(\d+)/);
             const prusaTime = text.match(/; estimated printing time = (.*)/);
-            if (curaTime) {
-                timeSeconds = parseInt(curaTime[1]);
-            } else if (prusaTime) {
+            if (curaTime) timeSeconds = parseInt(curaTime[1]);
+            else if (prusaTime) {
                 const timeStr = prusaTime[1];
                 const h = timeStr.match(/(\d+)h/) ? parseInt(timeStr.match(/(\d+)h/)[1]) : 0;
                 const m = timeStr.match(/(\d+)m/) ? parseInt(timeStr.match(/(\d+)m/)[1]) : 0;
@@ -189,573 +132,41 @@
             return { timeSeconds, filamentGrams };
         };
 
-        const handleDrop = (e) => {
-            e.preventDefault();
-            setIsDragOver(false);
-            setError(null);
-            const file = e.dataTransfer.files[0];
-            if (file) processFile(file);
-        };
-
-        const handleInput = (e) => {
-            setError(null);
-            const file = e.target.files[0];
-            if (file) processFile(file);
-        };
-
         const processFile = (file) => {
             const ext = file.name.split('.').pop().toLowerCase();
-            if (ext === 'stl' || ext === '3mf' || ext === 'obj') {
-                setError({ title: "Ham Model Dosyası", msg: "Baskı süresini hesaplamak için lütfen Slicer'dan aldığınız .gcode dosyasını yükleyin." });
-                return;
-            }
-            if (ext === 'gcode' || ext === 'bgcode') {
+            if (['stl','3mf','obj'].includes(ext)) { setError({ title: "Ham Model", msg: "Lütfen .gcode dosyası kullanın." }); return; }
+            if (['gcode','bgcode'].includes(ext)) {
                 setFileName(file.name);
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    if(ext === 'bgcode') {
-                        setError({ title: "Binary GCode", msg: "Lütfen standart (Text) G-Code formatını kullanın."});
-                        return;
-                    }
+                    if(ext === 'bgcode') { setError({ title: "Binary GCode", msg: "Lütfen Text G-Code kullanın."}); return; }
                     const result = parseGCode(e.target.result);
-                    if (result.timeSeconds === 0 && result.filamentGrams === 0) {
-                         setError({ title: "Veri Bulunamadı", msg: "Dosya içinde süre/gramaj bilgisi bulunamadı."});
-                    } else {
-                        onFileLoaded(result);
-                    }
+                    if (result.timeSeconds === 0 && result.filamentGrams === 0) setError({ title: "Veri Yok", msg: "Süre/Gramaj okunamadı."});
+                    else onFileLoaded(result);
                 };
                 reader.readAsText(file);
-            } else {
-                setError({ title: "Geçersiz Dosya", msg: "Lütfen .gcode dosyası yükleyin." });
-            }
+            } else setError({ title: "Geçersiz Dosya", msg: ".gcode yükleyin." });
         };
 
         return (
-            <div 
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6 group ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : (isDragOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50')}`}
-            >
-                <input type="file" onChange={handleInput} accept=".gcode,.stl,.3mf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e)=>{e.preventDefault(); setIsDragOver(false); setError(null); if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);}} 
+                className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6 group ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : (isDragOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50')}`}>
+                <input type="file" onChange={(e)=>{setError(null); if(e.target.files[0]) processFile(e.target.files[0]);}} accept=".gcode" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <div className="flex flex-col items-center gap-2">
-                    {error ? (
-                        <>
-                            <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500">
-                                <Icons.AlertCircle />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-red-600 dark:text-red-400">{error.title}</p>
-                                <p className="text-xs text-red-500 dark:text-red-300 max-w-xs mx-auto mt-1">{error.msg}</p>
-                            </div>
-                        </>
-                    ) : fileName ? (
-                        <>
-                            <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                                <Icons.FileText />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{fileName}</p>
-                                <p className="text-xs text-green-600 dark:text-green-400">Analiz Başarılı</p>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-blue-500 transition-colors">
-                                <Icons.Upload />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-slate-600 dark:text-slate-300">G-Code Dosyasını Buraya Bırak</p>
-                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Süre ve ağırlık otomatik hesaplanır</p>
-                            </div>
-                        </>
-                    )}
+                    {error ? <div className="text-red-500"><Icons.AlertCircle /><p className="text-sm font-bold mt-1">{error.title}</p></div> : 
+                     fileName ? <div className="text-green-600"><Icons.FileText /><p className="text-sm font-bold mt-1">{fileName}</p></div> : 
+                     <div className="text-slate-400 group-hover:text-blue-500"><Icons.Upload /><p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">G-Code Yükle</p></div>}
                 </div>
             </div>
         );
     };
 
-    // --- VIEWS ---
-
-    const CalculatorView = ({ data, handlers, profiles, onSaveProfile, onLoadProfile, inventory, onDeductStock }) => {
-        const { filamentPrice, spoolWeight, printWeight, power, elecRate, hours, minutes, markup, failure, labor, activeProfileId } = data;
-        const { setFilamentPrice, setSpoolWeight, setPrintWeight, setPower, setElecRate, setHours, setMinutes, setMarkup, setFailure, setLabor } = handlers;
-        
-        const [showQuoteModal, setShowQuoteModal] = React.useState(false);
-        const [customerName, setCustomerName] = React.useState("");
-        const [profileName, setProfileName] = React.useState("");
-        const [showProfileModal, setShowProfileModal] = React.useState(false);
-
-        // Hesaplamalar
-        const materialCost = (filamentPrice / spoolWeight) * printWeight;
-        const totalHours = Number(hours) + (Number(minutes) / 60);
-        const energyCost = ((power * totalHours) / 1000) * elecRate;
-        const laborCost = labor * totalHours;
-        const baseCost = materialCost + energyCost + laborCost;
-        const withFailure = baseCost * (1 + (failure / 100));
-        const finalPrice = withFailure * (1 + (markup / 100));
-
-        // Grafikler için Yüzdeler
-        const totalForGraph = materialCost + energyCost + laborCost || 1; 
-        const pMat = (materialCost / totalForGraph) * 100;
-        const pEner = (energyCost / totalForGraph) * 100;
-        const pLab = (laborCost / totalForGraph) * 100;
-
-        const handleGCodeLoaded = (result) => {
-            if (result.filamentGrams > 0) setPrintWeight(result.filamentGrams);
-            if (result.timeSeconds > 0) {
-                setHours(Math.floor(result.timeSeconds / 3600));
-                setMinutes(Math.floor((result.timeSeconds % 3600) / 60));
-            }
-        };
-
-        const handleSaveProfile = () => {
-            if(profileName) {
-                onSaveProfile(profileName);
-                setShowProfileModal(false);
-                setProfileName("");
-            }
-        };
-
-        const copyQuote = () => {
-            const text = `📦 *3D Baskı Teklifi*
-👤 ${customerName || 'Müşteri'}
-
-🔹 *Proje Detayları*
-• Süre: ${hours}sa ${minutes}dk
-• Ağırlık: ${printWeight}g
-
-💰 *Fiyatlandırma*
-• Malzeme: ${formatMoney(materialCost)}
-• Enerji & İş: ${formatMoney(energyCost + laborCost)}
-• Toplam Maliyet: ${formatMoney(withFailure)}
-
-🏷️ *TOPLAM TUTAR: ${formatMoney(finalPrice)}*`.trim();
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try { document.execCommand('copy'); alert("Teklif panoya kopyalandı!"); } 
-            catch (err) { alert("Kopyalama başarısız oldu."); }
-            document.body.removeChild(textArea);
-        };
-
-        return (
-            <div className="animate-fade-in relative">
-                
-                {/* PROFIL SEÇİCİ */}
-                <div className="flex justify-between items-center mb-6">
-                    <div className="flex gap-2 w-full max-w-xs">
-                        <select 
-                            value={activeProfileId || ""}
-                            onChange={(e) => onLoadProfile(e.target.value)}
-                            className="bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-                        >
-                            <option value="">Varsayılan Ayarlar</option>
-                            {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                        </select>
-                        <button onClick={() => setShowProfileModal(true)} className="p-2.5 text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50">
-                            <Icons.Save />
-                        </button>
-                    </div>
-                </div>
-
-                <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-                    {/* GİRDİLER */}
-                    <div className="lg:col-span-2 space-y-6 pb-32 lg:pb-0">
-                        <GCodeDropZone onFileLoaded={handleGCodeLoaded} />
-
-                        {/* MALZEME */}
-                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
-                            <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400"></span> Materyal
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                                <InputField label="Filament Fiyatı" value={filamentPrice} onChange={setFilamentPrice} unit="₺" />
-                                <InputField label="Makara Ağırlığı" value={spoolWeight} onChange={setSpoolWeight} unit="g" />
-                                <InputField label="Model Ağırlığı" value={printWeight} onChange={setPrintWeight} unit="g" icon={Icons.Cube} />
-                            </div>
-                        </section>
-
-                        {/* ENERJİ */}
-                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
-                            <h2 className="text-sm font-bold text-amber-500 uppercase mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Enerji & Süre
-                            </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-                                <div className="col-span-2 md:col-span-2 grid grid-cols-2 gap-4">
-                                    <InputField label="Güç Tüketimi" value={power} onChange={setPower} unit="W" icon={Icons.Zap} />
-                                    <InputField label="Elektrik" value={elecRate} onChange={setElecRate} unit="₺" step="0.1" />
-                                </div>
-                                <InputField label="Baskı Saati" value={hours} onChange={setHours} unit="Sa" icon={Icons.Clock} />
-                                <InputField label="Dakika" value={minutes} onChange={setMinutes} unit="Dk" />
-                            </div>
-                        </section>
-
-                        {/* FİNANSAL */}
-                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
-                            <h2 className="text-sm font-bold text-emerald-500 uppercase mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Finansal
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                                <InputField label="Saatlik İşçilik" value={labor} onChange={setLabor} unit="₺" />
-                                <InputField label="Fire/Hata Payı" value={failure} onChange={setFailure} unit="%" />
-                                <InputField label="Kar Marjı" value={markup} onChange={setMarkup} unit="%" icon={Icons.Tag} />
-                            </div>
-                        </section>
-                    </div>
-
-                    {/* SONUÇ PANELİ */}
-                    <div className="hidden lg:block lg:col-span-1">
-                        <div className="sticky top-24 space-y-4">
-                            <div className="bg-white dark:bg-dark-card rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/30 border border-slate-100 dark:border-slate-700/50 transition-colors">
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Maliyet Özeti</h3>
-                                
-                                {/* Visual Cost Bar */}
-                                <div className="mb-6">
-                                    <div className="flex h-3 w-full rounded-full overflow-hidden bg-slate-100 dark:bg-slate-700 mb-2">
-                                        <div style={{width: `${pMat}%`}} className="bg-blue-500" title="Malzeme"></div>
-                                        <div style={{width: `${pEner}%`}} className="bg-amber-500" title="Enerji"></div>
-                                        <div style={{width: `${pLab}%`}} className="bg-emerald-500" title="İşçilik"></div>
-                                    </div>
-                                    <div className="flex justify-between text-[10px] text-slate-400 uppercase tracking-wider">
-                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span> Malzeme</span>
-                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Enerji</span>
-                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> İşçilik</span>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1 mb-8">
-                                    <DetailRow label="Malzeme" value={formatMoney(materialCost)} />
-                                    <DetailRow label="Elektrik" value={formatMoney(energyCost)} />
-                                    <DetailRow label="İşçilik" value={formatMoney(laborCost)} />
-                                    <div className="h-px bg-slate-100 dark:bg-slate-700 my-3"></div>
-                                    <DetailRow label="Ham Maliyet" value={formatMoney(baseCost)} color="text-slate-500 dark:text-slate-400" />
-                                    <DetailRow label="Risk Dahil" value={formatMoney(withFailure)} bold />
-                                </div>
-                                
-                                <div className="bg-blue-600 dark:bg-blue-700 rounded-2xl p-5 text-center text-white shadow-lg shadow-blue-600/30 dark:shadow-blue-900/30">
-                                    <p className="text-blue-100 text-xs uppercase tracking-wider font-semibold mb-1">Satış Fiyatı</p>
-                                    <p className="text-4xl font-bold tracking-tight">{formatMoney(finalPrice)}</p>
-                                    <div className="mt-3 inline-block bg-blue-700/50 dark:bg-blue-800/50 rounded-lg px-3 py-1">
-                                        <p className="text-xs text-blue-100">Net Kar: {formatMoney(finalPrice - withFailure)}</p>
-                                    </div>
-                                </div>
-                                
-                                <button 
-                                    onClick={() => setShowQuoteModal(true)}
-                                    className="w-full mt-4 flex items-center justify-center gap-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 py-3 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
-                                >
-                                    <Icons.FileText /> Teklif Oluştur
-                                </button>
-                                
-                                {inventory.length > 0 && (
-                                    <button 
-                                        onClick={() => onDeductStock(printWeight)}
-                                        className="w-full mt-2 flex items-center justify-center gap-2 bg-transparent border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm"
-                                    >
-                                        <Icons.Archive /> Stoktan Düş
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* MODAL: PROFILE SAVE */}
-                {showProfileModal && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-                        <div className="bg-white dark:bg-dark-card rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in border border-slate-100 dark:border-slate-700">
-                            <h3 className="text-lg font-bold mb-4 dark:text-white">Ayarları Kaydet</h3>
-                            <input 
-                                type="text" 
-                                value={profileName} 
-                                onChange={(e) => setProfileName(e.target.value)} 
-                                placeholder="Profil Adı (örn: Ender 3 PLA)" 
-                                className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-3 rounded-xl mb-4 outline-none dark:text-white"
-                                autoFocus
-                            />
-                            <div className="flex gap-3">
-                                <button onClick={() => setShowProfileModal(false)} className="flex-1 py-3 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl">İptal</button>
-                                <button onClick={handleSaveProfile} className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium">Kaydet</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* MODAL: QUOTE GENERATOR */}
-                {showQuoteModal && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-                        <div className="bg-white dark:bg-dark-card rounded-2xl w-full max-w-md shadow-2xl animate-fade-in overflow-hidden border border-slate-100 dark:border-slate-700">
-                            <div className="bg-slate-900 dark:bg-slate-950 p-6 text-white">
-                                <h3 className="text-xl font-bold flex items-center gap-2"><Icons.FileText/> Teklif Hazırla</h3>
-                            </div>
-                            <div className="p-6">
-                                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Müşteri Adı</label>
-                                <input 
-                                    type="text" 
-                                    value={customerName} 
-                                    onChange={(e) => setCustomerName(e.target.value)} 
-                                    className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 dark:text-white p-3 rounded-xl mb-6 outline-none"
-                                    placeholder="Ad Soyad"
-                                />
-                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 mb-6 font-mono text-sm text-slate-700 dark:text-slate-300">
-                                    <p className="font-bold border-b dark:border-slate-700 pb-2 mb-2">ÖZET</p>
-                                    <div className="flex justify-between mb-1"><span>Malzeme:</span> <span>{formatMoney(materialCost)}</span></div>
-                                    <div className="flex justify-between mb-1"><span>Enerji+İş:</span> <span>{formatMoney(energyCost + laborCost)}</span></div>
-                                    <div className="flex justify-between pt-2 border-t dark:border-slate-700 font-bold text-lg"><span>TOPLAM:</span> <span>{formatMoney(finalPrice)}</span></div>
-                                </div>
-                                <div className="flex gap-3">
-                                    <button onClick={() => setShowQuoteModal(false)} className="flex-1 py-3 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl font-medium">Kapat</button>
-                                    <button onClick={copyQuote} className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium flex items-center justify-center gap-2">
-                                        <Icons.Copy /> Kopyala
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-                
-                {/* MOBİL BOTTOM BAR */}
-                <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)] border-t border-slate-100 dark:border-slate-800 z-40 lg:hidden safe-bottom-padding p-4 flex items-center justify-between">
-                    <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase">Satış Fiyatı</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{formatMoney(finalPrice)}</p>
-                    </div>
-                    <button onClick={() => setShowQuoteModal(true)} className="bg-slate-900 dark:bg-blue-600 text-white px-5 py-3 rounded-xl font-medium shadow-lg flex items-center gap-2">
-                         Teklif Al
-                    </button>
-                </div>
-            </div>
-        );
-    };
-
-    const InventoryView = ({ inventory, setInventory }) => {
-        const [newName, setNewName] = React.useState("");
-        const [newColor, setNewColor] = React.useState("#3b82f6");
-        const [newWeight, setNewWeight] = React.useState(1000);
-        const [showAdd, setShowAdd] = React.useState(false);
-
-        const addSpool = () => {
-            if(!newName) return;
-            const newSpool = {
-                id: generateId(),
-                name: newName,
-                color: newColor,
-                maxWeight: Number(newWeight),
-                currentWeight: Number(newWeight),
-                purchaseDate: new Date().toLocaleDateString('tr-TR')
-            };
-            setInventory([...inventory, newSpool]);
-            setNewName("");
-            setShowAdd(false);
-        };
-
-        const deleteSpool = (id) => {
-            if(confirm("Bu makarayı silmek istediğine emin misin?")) setInventory(inventory.filter(i => i.id !== id));
-        };
-
-        return (
-            <div className="animate-fade-in pb-20">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-white">Filament Stoğum</h2>
-                    <button onClick={() => setShowAdd(!showAdd)} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-                        {showAdd ? 'İptal' : '+ Yeni Makara'}
-                    </button>
-                </div>
-
-                {showAdd && (
-                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 mb-8 animate-slide-up">
-                        <h3 className="font-bold mb-4 dark:text-white">Yeni Makara Ekle</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Marka/Tür</label>
-                                <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg outline-none dark:text-white" placeholder="örn: Esun PLA+" />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Renk</label>
-                                <div className="flex gap-2">
-                                    <input type="color" value={newColor} onChange={e=>setNewColor(e.target.value)} className="h-10 w-10 rounded cursor-pointer border-none bg-transparent" />
-                                    <input type="text" value={newColor} readOnly className="flex-1 bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg text-xs dark:text-white" />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Ağırlık (g)</label>
-                                <input type="number" value={newWeight} onChange={e=>setNewWeight(e.target.value)} className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg outline-none dark:text-white" />
-                            </div>
-                        </div>
-                        <button onClick={addSpool} className="w-full bg-slate-900 dark:bg-blue-600 text-white py-3 rounded-xl font-medium">Listeye Ekle</button>
-                    </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {inventory.length === 0 ? (
-                        <div className="col-span-2 text-center py-10 text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-dark-card/50 rounded-2xl border border-dashed dark:border-slate-700">
-                            <p>Henüz kayıtlı filament yok.</p>
-                        </div>
-                    ) : (
-                        inventory.map(spool => {
-                            const percent = Math.max(0, Math.min(100, (spool.currentWeight / spool.maxWeight) * 100));
-                            return (
-                                <div key={spool.id} className="bg-white dark:bg-dark-card p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 relative group overflow-hidden transition-colors">
-                                    <div className="absolute top-0 left-0 w-1 h-full" style={{backgroundColor: spool.color}}></div>
-                                    <div className="flex justify-between items-start mb-2 pl-3">
-                                        <div>
-                                            <h4 className="font-bold text-slate-800 dark:text-slate-200">{spool.name}</h4>
-                                            <p className="text-xs text-slate-400">{spool.purchaseDate}</p>
-                                        </div>
-                                        <button onClick={() => deleteSpool(spool.id)} className="text-slate-300 hover:text-red-500"><Icons.Trash /></button>
-                                    </div>
-                                    <div className="pl-3 mt-4">
-                                        <div className="flex justify-between text-xs font-semibold mb-1">
-                                            <span style={{color: spool.color}}>{Math.round(percent)}% Kaldı</span>
-                                            <span className="text-slate-500 dark:text-slate-400">{spool.currentWeight}g / {spool.maxWeight}g</span>
-                                        </div>
-                                        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
-                                            <div className="h-2.5 rounded-full transition-all duration-500" style={{width: `${percent}%`, backgroundColor: spool.color}}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })
-                    )}
-                </div>
-            </div>
-        );
-    };
-
-    const DiscoverView = () => {
-        const [searchTerm, setSearchTerm] = React.useState("");
-        
-        const handleSearch = (e) => {
-            e.preventDefault();
-            if(!searchTerm) return;
-            window.open(`https://www.thingiverse.com/search?q=${searchTerm}&type=things&sort=relevant`, '_blank');
-            window.open(`https://www.printables.com/search/models?q=${searchTerm}`, '_blank');
-            window.open(`https://makerworld.com/en/search/models?keyword=${searchTerm}`, '_blank');
-        };
-
-        // Statik liste yerine dinamik linkler
-        const trendingLinks = [
-            { name: "Thingiverse Popüler", url: "https://www.thingiverse.com/explore/popular", color: "bg-blue-500 hover:bg-blue-600", desc: "Topluluğun en beğendiği modeller" },
-            { name: "Printables Trendler", url: "https://www.printables.com/model?o=popular", color: "bg-orange-500 hover:bg-orange-600", desc: "Prusa topluluğunun seçtikleri" },
-            { name: "MakerWorld Hot", url: "https://makerworld.com/tr/3d-models?orderBy=hotScore&designCreateSince=0", color: "bg-green-500 hover:bg-green-600", desc: "Bambu Lab için en popülerler" },
-            { name: "Cults3D Best", url: "https://cults3d.com/en/creations/popular/ordering/downloads_count", color: "bg-purple-600 hover:bg-purple-700", desc: "En çok indirilen tasarım dosyaları" },
-            { name: "Thangs Trending", url: "https://thangs.com/?sort=trending", color: "bg-teal-500 hover:bg-teal-600", desc: "Tüm sitelerden popüler modeller" },
-            { name: "MyMiniFactory Popüler", url: "https://www.myminifactory.com/pages/popular", color: "bg-slate-600 hover:bg-slate-700", desc: "Figür ve oyun karakterleri" },
-        ];
-
-        return (
-            <div className="animate-fade-in pb-12">
-                {/* Arama Bölümü - Aynı Kalıyor */}
-                <div className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900 dark:to-slate-900 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden shadow-xl">
-                    <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-                    <div className="relative z-10">
-                        <h2 className="text-2xl font-bold mb-2">Model Arama Motoru</h2>
-                        <p className="text-slate-300 dark:text-slate-200 mb-6 text-sm">Tek bir arama ile Thingiverse, Printables ve MakerWorld üzerinde aynı anda arama yapın.</p>
-                        <form onSubmit={handleSearch} className="relative max-w-lg">
-                            <input 
-                                type="text" 
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Ne basmak istersin? (örn: Phone Stand)" 
-                                className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                            />
-                            <div className="absolute left-4 top-3.5 text-slate-400">
-                                <Icons.Search />
-                            </div>
-                            <button type="submit" className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors">
-                                Ara
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                {/* YENİ BÖLÜM: Canlı Trendler (Demirbaşların Yerine) */}
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1 flex items-center justify-between">
-                    <span>Canlı Trendler (En Çok İndirilenler)</span>
-                    <span className="text-xs font-normal text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-md flex items-center gap-1">
-                        <Icons.Trending/> Canlı Liste
-                    </span>
-                </h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-                    {trendingLinks.map((link, index) => (
-                        <a 
-                            key={index} 
-                            href={link.url} 
-                            target="_blank" 
-                            className={`relative overflow-hidden rounded-2xl p-5 shadow-lg transition-transform hover:-translate-y-1 group cursor-pointer ${link.color} text-white`}
-                        >
-                            <div className="relative z-10 flex flex-col h-full justify-between">
-                                <div>
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-lg">{link.name}</h4>
-                                        <Icons.ExternalLink />
-                                    </div>
-                                    <p className="text-white/80 text-xs font-medium">{link.desc}</p>
-                                </div>
-                                <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-lg py-2 px-3 text-center text-xs font-bold">
-                                    Listeyi Gör &rarr;
-                                </div>
-                            </div>
-                            {/* Arka Plan Süslemesi */}
-                            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full"></div>
-                        </a>
-                    ))}
-                </div>
-
-                {/* Popüler Platformlar (Kısayollar) */}
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1">Platform Kısayolları</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-                    {[
-                        { name: "Thingiverse", url: "https://www.thingiverse.com", color: "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300" },
-                        { name: "Printables", url: "https://www.printables.com", color: "bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300" },
-                        { name: "MakerWorld", url: "https://makerworld.com", color: "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300" },
-                        { name: "Cults3D", url: "https://cults3d.com", color: "bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300" },
-                        { name: "MyMiniFactory", url: "https://www.myminifactory.com", color: "bg-slate-50 text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300" },
-                        { name: "Thangs", url: "https://thangs.com", color: "bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-300" }
-                    ].map((site) => (
-                        <a key={site.name} href={site.url} target="_blank" className={`${site.color} p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer group`}>
-                            <Icons.Globe />
-                            <span className="font-semibold text-sm">{site.name}</span>
-                            <Icons.ExternalLink />
-                        </a>
-                    ))}
-                </div>
-            </div>
-        );
-    };
-
+    // --- MAIN APP ---
     function App() {
         const [activeTab, setActiveTab] = React.useState('calculator');
         const [isDark, setIsDark] = React.useState(false);
 
-        // Dark Mode Logic
-        React.useEffect(() => {
-            const savedTheme = localStorage.getItem('3dPro_Theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                setIsDark(true);
-                document.documentElement.classList.add('dark');
-            } else {
-                setIsDark(false);
-                document.documentElement.classList.remove('dark');
-            }
-        }, []);
-
-        const toggleTheme = () => {
-            if (isDark) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('3dPro_Theme', 'light');
-                setIsDark(false);
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('3dPro_Theme', 'dark');
-                setIsDark(true);
-            }
-        };
-
-        // Calculator State
+        // State
         const [filamentPrice, setFilamentPrice] = React.useState(500);
         const [spoolWeight, setSpoolWeight] = React.useState(1000);
         const [printWeight, setPrintWeight] = React.useState(50);
@@ -766,116 +177,386 @@
         const [markup, setMarkup] = React.useState(50);
         const [failure, setFailure] = React.useState(10);
         const [labor, setLabor] = React.useState(0);
-        const [activeProfileId, setActiveProfileId] = React.useState(null);
+        const [exchangeRate, setExchangeRate] = React.useState(1); // Yeni Döviz Kuru
+        
+        // Multi-Part (Cart) System
+        const [cart, setCart] = React.useState([]); 
+        const [partName, setPartName] = React.useState("Parça 1");
 
-        // Data
         const [profiles, setProfiles] = React.useState([]);
         const [inventory, setInventory] = React.useState([]);
+        const [history, setHistory] = React.useState([]);
+        const [machines, setMachines] = React.useState([]); // Yeni Makine Listesi
 
-        // Persistence
+        // Modals
+        const [showQuoteModal, setShowQuoteModal] = React.useState(false);
+        const [showProfileModal, setShowProfileModal] = React.useState(false);
+        const [profileName, setProfileName] = React.useState("");
+        const [customerName, setCustomerName] = React.useState("");
+
+        // Dark Mode & Persistence
         React.useEffect(() => {
-            const savedSettings = localStorage.getItem('3dPro_Settings');
-            const savedProfiles = localStorage.getItem('3dPro_Profiles');
-            const savedInventory = localStorage.getItem('3dPro_Inventory');
-
-            if (savedSettings) {
-                const s = JSON.parse(savedSettings);
-                setFilamentPrice(s.filamentPrice); setSpoolWeight(s.spoolWeight); 
-                setPower(s.power); setElecRate(s.elecRate); setMarkup(s.markup); 
-                setFailure(s.failure); setLabor(s.labor);
+            const theme = localStorage.getItem('3dPro_Theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) { setIsDark(true); document.documentElement.classList.add('dark'); }
+            
+            const s = JSON.parse(localStorage.getItem('3dPro_Settings'));
+            if(s) { 
+                setFilamentPrice(s.filamentPrice); setSpoolWeight(s.spoolWeight); setPower(s.power); 
+                setElecRate(s.elecRate); setMarkup(s.markup); setFailure(s.failure); setLabor(s.labor); 
+                if(s.exchangeRate) setExchangeRate(s.exchangeRate);
             }
-            if (savedProfiles) setProfiles(JSON.parse(savedProfiles));
-            if (savedInventory) setInventory(JSON.parse(savedInventory));
+            setProfiles(JSON.parse(localStorage.getItem('3dPro_Profiles')) || []);
+            setInventory(JSON.parse(localStorage.getItem('3dPro_Inventory')) || []);
+            setHistory(JSON.parse(localStorage.getItem('3dPro_History')) || []);
+            setMachines(JSON.parse(localStorage.getItem('3dPro_Machines')) || []);
         }, []);
 
         React.useEffect(() => {
-            const settings = { filamentPrice, spoolWeight, power, elecRate, markup, failure, labor };
-            localStorage.setItem('3dPro_Settings', JSON.stringify(settings));
-        }, [filamentPrice, spoolWeight, power, elecRate, markup, failure, labor]);
+            localStorage.setItem('3dPro_Settings', JSON.stringify({ filamentPrice, spoolWeight, power, elecRate, markup, failure, labor, exchangeRate }));
+        }, [filamentPrice, spoolWeight, power, elecRate, markup, failure, labor, exchangeRate]);
 
-        React.useEffect(() => { localStorage.setItem('3dPro_Profiles', JSON.stringify(profiles)); }, [profiles]);
-        React.useEffect(() => { localStorage.setItem('3dPro_Inventory', JSON.stringify(inventory)); }, [inventory]);
+        React.useEffect(() => localStorage.setItem('3dPro_Profiles', JSON.stringify(profiles)), [profiles]);
+        React.useEffect(() => localStorage.setItem('3dPro_Inventory', JSON.stringify(inventory)), [inventory]);
+        React.useEffect(() => localStorage.setItem('3dPro_History', JSON.stringify(history)), [history]);
+        React.useEffect(() => localStorage.setItem('3dPro_Machines', JSON.stringify(machines)), [machines]);
 
-        const saveProfile = (name) => {
-            const newProfile = { id: generateId(), name, settings: { filamentPrice, spoolWeight, power, elecRate, markup, failure, labor } };
-            setProfiles([...profiles, newProfile]);
-            setActiveProfileId(newProfile.id);
+        const toggleTheme = () => {
+            setIsDark(!isDark);
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('3dPro_Theme', !isDark ? 'dark' : 'light');
         };
 
-        const loadProfile = (id) => {
-            setActiveProfileId(id);
-            if (!id) return;
-            const p = profiles.find(x => x.id === id);
-            if (p) {
-                setFilamentPrice(p.settings.filamentPrice); setSpoolWeight(p.settings.spoolWeight); setPower(p.settings.power);
-                setElecRate(p.settings.elecRate); setMarkup(p.settings.markup); setFailure(p.settings.failure); setLabor(p.settings.labor);
-            }
+        // Calculations (Single Item)
+        const calcSingle = (w, h, m) => {
+            // Döviz Kuru Entegrasyonu: Filament Fiyatı * Kur
+            const adjustedFilamentPrice = filamentPrice * exchangeRate;
+            const mat = (adjustedFilamentPrice / spoolWeight) * w;
+            
+            const timeH = h + (m/60);
+            const en = ((power * timeH) / 1000) * elecRate;
+            const lab = labor * timeH;
+            const base = mat + en + lab;
+            const risk = base * (1 + (failure/100));
+            const final = risk * (1 + (markup/100));
+            return { mat, en, lab, base, risk, final };
         };
 
-        const deductStock = (amount) => {
-            if (inventory.length === 0) { alert("Önce 'Stok' sekmesinden filament eklemelisin."); setActiveTab('inventory'); return; }
-            const spool = inventory[0];
-            if (spool && confirm(`${spool.name} makarasından ${amount}g düşülsün mü?`)) {
-                const updatedInv = inventory.map(item => {
-                    if(item.id === spool.id) return { ...item, currentWeight: Math.max(0, item.currentWeight - amount) };
-                    return item;
-                });
-                setInventory(updatedInv);
-                alert("Stok güncellendi.");
-            }
+        const currentCalc = calcSingle(printWeight, Number(hours), Number(minutes));
+
+        // Cart Calculations
+        const cartTotals = React.useMemo(() => {
+            let tMat=0, tEn=0, tLab=0, tRisk=0, tFinal=0, tWeight=0;
+            const items = cart.length > 0 ? cart : [{...currentCalc, name: partName, weight: printWeight, hours, minutes}];
+            
+            items.forEach(i => {
+                const c = i.final ? i : currentCalc; 
+                tMat += c.mat; tEn += c.en; tLab += c.lab; tRisk += c.risk; tFinal += c.final;
+                tWeight += (i.weight || printWeight);
+            });
+            return { tMat, tEn, tLab, tRisk, tFinal, tWeight, items };
+        }, [cart, currentCalc, printWeight, hours, minutes, partName]);
+
+        const addToCart = () => {
+            const newItem = {
+                id: generateId(),
+                name: partName,
+                weight: printWeight,
+                hours: Number(hours),
+                minutes: Number(minutes),
+                ...currentCalc
+            };
+            setCart([...cart, newItem]);
+            setPartName(`Parça ${cart.length + 2}`);
         };
 
-        const calcData = { filamentPrice, spoolWeight, printWeight, power, elecRate, hours, minutes, markup, failure, labor, activeProfileId };
-        const calcHandlers = { setFilamentPrice, setSpoolWeight, setPrintWeight, setPower, setElecRate, setHours, setMinutes, setMarkup, setFailure, setLabor };
+        const saveToHistory = () => {
+            const job = {
+                id: generateId(),
+                date: new Date().toLocaleDateString('tr-TR'),
+                customer: customerName || 'İsimsiz',
+                totalPrice: cartTotals.tFinal,
+                itemCount: cartTotals.items.length
+            };
+            setHistory([job, ...history]);
+            alert("İş Geçmişe Kaydedildi!");
+        };
 
-        return (
-            <div className="min-h-screen pb-6">
-                
-                {/* Header */}
-                <div className="bg-white dark:bg-dark-card sticky top-0 z-20 border-b border-slate-100 dark:border-slate-800 shadow-sm safe-top-padding transition-colors">
-                    <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-blue-500/30 shadow-lg">
-                                <Icons.Cube />
+        // Views
+        const CalculatorView = () => (
+            <div className="lg:grid lg:grid-cols-3 lg:gap-8 pb-24">
+                <div className="lg:col-span-2 space-y-6">
+                    <GCodeDropZone onFileLoaded={(r) => { setPrintWeight(r.filamentGrams); setHours(Math.floor(r.timeSeconds/3600)); setMinutes(Math.floor((r.timeSeconds%3600)/60)); }} />
+
+                    {/* Quick Config */}
+                    <div className="bg-white dark:bg-dark-card p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex gap-2 overflow-x-auto">
+                        <select onChange={(e)=>{const p=profiles.find(x=>x.id===e.target.value); if(p){setFilamentPrice(p.s.filamentPrice); setPower(p.s.power);}}} className="bg-slate-50 dark:bg-dark-input dark:text-white border-none rounded-lg text-sm p-2 min-w-[150px]">
+                            <option value="">Profil Seç...</option>
+                            {profiles.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
+                        </select>
+                        <button onClick={()=>setShowProfileModal(true)} className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Icons.Save/></button>
+                    </div>
+
+                    {/* Inputs */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-white dark:bg-dark-card p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                            <h3 className="font-bold text-blue-500 text-sm uppercase flex items-center gap-2"><Icons.Cube/> Malzeme & Parça</h3>
+                            <InputField label="Parça Adı" type="text" value={partName} onChange={setPartName} />
+                            <div className="grid grid-cols-2 gap-3">
+                                <InputField label="Filament ($/₺)" value={filamentPrice} onChange={setFilamentPrice} />
+                                <InputField label="Kur (1=₺)" value={exchangeRate} onChange={setExchangeRate} step="0.1" icon={Icons.Currency} />
                             </div>
-                            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight hidden sm:block">3D Baskı Yöneticisi</h1>
-                            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight sm:hidden">3D Yönetici</h1>
+                            <div className="grid grid-cols-1 gap-3">
+                                <InputField label="Ağırlık (g)" value={printWeight} onChange={setPrintWeight} />
+                            </div>
                         </div>
-                        
-                        <div className="flex items-center gap-3">
-                            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl transition-colors">
-                                <button onClick={() => setActiveTab('calculator')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'calculator' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
-                                    <Icons.Calculator/> <span className="hidden sm:inline">Hesapla</span>
-                                </button>
-                                <button onClick={() => setActiveTab('inventory')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'inventory' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
-                                    <Icons.Archive/> <span className="hidden sm:inline">Stok</span>
-                                </button>
-                                <button onClick={() => setActiveTab('discover')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'discover' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
-                                    <Icons.Search/> <span className="hidden sm:inline">Keşfet</span>
-                                </button>
+                        <div className="bg-white dark:bg-dark-card p-5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                            <h3 className="font-bold text-amber-500 text-sm uppercase flex items-center gap-2"><Icons.Zap/> Süre & Maliyet</h3>
+                            <div className="grid grid-cols-2 gap-3">
+                                <InputField label="Saat" value={hours} onChange={setHours} />
+                                <InputField label="Dakika" value={minutes} onChange={setMinutes} />
                             </div>
-                            <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+                            <div className="grid grid-cols-3 gap-2">
+                                <InputField label="Elektrik" value={elecRate} onChange={setElecRate} step="0.1" />
+                                <InputField label="Fire %" value={failure} onChange={setFailure} />
+                                <InputField label="Kar %" value={markup} onChange={setMarkup} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <button onClick={addToCart} className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border-2 border-dashed border-slate-300 dark:border-slate-600">
+                        <Icons.Plus /> Bu Parçayı Listeye Ekle
+                    </button>
+
+                    {/* Cart List */}
+                    {cart.length > 0 && (
+                        <div className="bg-white dark:bg-dark-card rounded-2xl p-4 border border-slate-100 dark:border-slate-800">
+                            <h3 className="font-bold mb-3 dark:text-white">Proje Listesi ({cart.length})</h3>
+                            {cart.map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-dark-input rounded-lg mb-2 text-sm">
+                                    <span className="font-medium dark:text-slate-200">{item.name} <span className="text-xs text-slate-400">({item.weight}g)</span></span>
+                                    <div className="flex items-center gap-3">
+                                        <span className="font-bold dark:text-white">{formatMoney(item.final)}</span>
+                                        <button onClick={()=>setCart(cart.filter(x=>x.id!==item.id))} className="text-red-400"><Icons.Trash/></button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Summary Panel */}
+                <div className="hidden lg:block lg:col-span-1">
+                    <div className="sticky top-24 bg-white dark:bg-dark-card rounded-3xl p-6 shadow-xl border border-slate-100 dark:border-slate-700">
+                        <h3 className="text-lg font-bold dark:text-white mb-6">Toplam Maliyet</h3>
+                        <div className="space-y-2 mb-6">
+                            <DetailRow label="Malzeme" value={formatMoney(cartTotals.tMat)} />
+                            <DetailRow label="Enerji" value={formatMoney(cartTotals.tEn)} />
+                            <DetailRow label="İşçilik" value={formatMoney(cartTotals.tLab)} />
+                            <div className="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
+                            <DetailRow label="Risk Dahil" value={formatMoney(cartTotals.tRisk)} bold />
+                        </div>
+                        <div className="bg-blue-600 rounded-2xl p-5 text-center text-white mb-4">
+                            <p className="text-blue-100 text-xs uppercase font-semibold">Toplam Teklif</p>
+                            <p className="text-4xl font-bold">{formatMoney(cartTotals.tFinal)}</p>
+                        </div>
+                        <button onClick={()=>setShowQuoteModal(true)} className="w-full bg-slate-900 dark:bg-slate-800 text-white py-3 rounded-xl flex justify-center gap-2"><Icons.FileText /> Teklif Oluştur</button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const MachinesView = () => {
+            const [mName, setMName] = React.useState("");
+            const [mInterval, setMInterval] = React.useState(200); // Varsayılan bakım aralığı 200 saat
+
+            const addMachine = () => {
+                if(!mName) return;
+                setMachines([...machines, { id: generateId(), name: mName, totalHours: 0, maintenanceInterval: Number(mInterval), lastMaintenance: 0 }]);
+                setMName("");
+            };
+
+            const updateHours = (id, amount) => {
+                setMachines(machines.map(m => m.id === id ? { ...m, totalHours: m.totalHours + amount } : m));
+            };
+
+            const doMaintenance = (id) => {
+                if(confirm("Bakım yapıldı olarak işaretlensin mi?")) {
+                    setMachines(machines.map(m => m.id === id ? { ...m, lastMaintenance: m.totalHours } : m));
+                }
+            };
+
+            return (
+                <div className="pb-24 animate-fade-in">
+                    <h2 className="text-2xl font-bold mb-6 dark:text-white flex items-center gap-2"><Icons.Tool/> Makine Bakım Takibi</h2>
+                    
+                    {/* Add Machine */}
+                    <div className="bg-white dark:bg-dark-card p-5 rounded-2xl border border-slate-100 dark:border-slate-800 mb-8">
+                        <h3 className="font-bold mb-4 dark:text-white">Yeni Yazıcı Ekle</h3>
+                        <div className="flex gap-2 flex-col sm:flex-row">
+                            <input value={mName} onChange={e=>setMName(e.target.value)} placeholder="Yazıcı Adı (örn: Bambu Lab X1)" className="flex-1 p-3 border rounded-xl dark:bg-dark-input dark:border-slate-700 dark:text-white" />
+                            <input type="number" value={mInterval} onChange={e=>setMInterval(e.target.value)} placeholder="Bakım Aralığı (Saat)" className="w-full sm:w-32 p-3 border rounded-xl dark:bg-dark-input dark:border-slate-700 dark:text-white" />
+                            <button onClick={addMachine} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">Ekle</button>
+                        </div>
+                    </div>
+
+                    {/* Machine List */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {machines.map(m => {
+                            const hoursSinceMaint = m.totalHours - m.lastMaintenance;
+                            const health = Math.max(0, 100 - (hoursSinceMaint / m.maintenanceInterval * 100));
+                            const color = health > 50 ? 'bg-green-500' : health > 20 ? 'bg-yellow-500' : 'bg-red-500';
+                            
+                            return (
+                                <div key={m.id} className="bg-white dark:bg-dark-card p-5 rounded-2xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 className="font-bold text-lg dark:text-white">{m.name}</h4>
+                                            <p className="text-xs text-slate-500">Toplam Çalışma: {m.totalHours} Saat</p>
+                                        </div>
+                                        <button onClick={()=>setMachines(machines.filter(x=>x.id!==m.id))} className="text-red-400"><Icons.Trash/></button>
+                                    </div>
+                                    
+                                    <div className="mb-4">
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span className="text-slate-500 dark:text-slate-400">Bakım Durumu</span>
+                                            <span className="font-bold dark:text-white">{Math.round(health)}%</span>
+                                        </div>
+                                        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+                                            <div className={`h-2 rounded-full progress-bar ${color}`} style={{width: `${health}%`}}></div>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 mt-1">Son bakımdan beri: {hoursSinceMaint} saat (Hedef: {m.maintenanceInterval}s)</p>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button onClick={()=>updateHours(m.id, 5)} className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 py-2 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700">+5 Saat</button>
+                                        <button onClick={()=>doMaintenance(m.id)} className="flex-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 py-2 rounded-lg text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-900/40">Bakım Yap</button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const HistoryView = () => (
+            <div className="animate-fade-in pb-20">
+                <h2 className="text-2xl font-bold mb-6 dark:text-white flex items-center gap-2"><Icons.History/> İş Geçmişi</h2>
+                {history.length === 0 ? <p className="text-slate-500">Henüz kayıtlı iş yok.</p> : 
+                <div className="grid gap-4">
+                    {history.map(job => (
+                        <div key={job.id} className="bg-white dark:bg-dark-card p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center shadow-sm">
+                            <div>
+                                <h4 className="font-bold dark:text-white">{job.customer}</h4>
+                                <p className="text-xs text-slate-400">{job.date} • {job.itemCount} Parça</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="font-bold text-lg text-blue-600">{formatMoney(job.totalPrice)}</p>
+                                <button onClick={()=>setHistory(history.filter(h=>h.id!==job.id))} className="text-xs text-red-400 hover:text-red-600">Sil</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>}
+            </div>
+        );
+
+        const DiscoverView = () => (
+            <div className="animate-fade-in pb-20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                     {[
+                        { name: "Thingiverse Popüler", url: "https://www.thingiverse.com/explore/popular", color: "bg-blue-500" },
+                        { name: "Printables Trendler", url: "https://www.printables.com/model?o=popular", color: "bg-orange-500" },
+                        { name: "MakerWorld Hot", url: "https://makerworld.com/en/models?orderBy=hot", color: "bg-green-500" },
+                        { name: "Cults3D Best", url: "https://cults3d.com/en/creations/popular/ordering/downloads_count", color: "bg-purple-600" }
+                    ].map((l,i)=><a key={i} href={l.url} target="_blank" className={`${l.color} text-white p-6 rounded-2xl font-bold flex justify-between items-center shadow-lg hover:opacity-90 transition-opacity`}><span>{l.name}</span><Icons.ExternalLink/></a>)}
+                </div>
+            </div>
+        );
+        
+        const InventoryView = () => {
+             const [name, setName] = React.useState("");
+             return (
+                 <div className="pb-20 animate-fade-in">
+                     <h2 className="text-2xl font-bold mb-6 dark:text-white flex items-center gap-2"><Icons.Archive/> Stok Takibi</h2>
+                     <div className="flex gap-2 mb-6">
+                         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Yeni Filament Ekle..." className="flex-1 p-3 rounded-xl border dark:bg-dark-input dark:border-slate-700 dark:text-white" />
+                         <button onClick={()=>{if(name){setInventory([...inventory, {id:generateId(), name, w:1000}]); setName("");}}} className="bg-blue-600 text-white px-6 rounded-xl font-bold">+</button>
+                     </div>
+                     <div className="grid gap-3">
+                         {inventory.map(i=>(
+                             <div key={i.id} className="bg-white dark:bg-dark-card p-4 rounded-xl flex justify-between items-center border dark:border-slate-800">
+                                 <span className="font-bold dark:text-white">{i.name}</span>
+                                 <button onClick={()=>setInventory(inventory.filter(x=>x.id!==i.id))} className="text-red-500"><Icons.Trash/></button>
+                             </div>
+                         ))}
+                     </div>
+                 </div>
+             )
+        }
+
+        // --- RENDER ---
+        return (
+            <div className="min-h-screen pb-safe">
+                <div className="sticky top-0 z-30 bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+                    <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+                        <div className="flex items-center gap-2 font-bold text-xl dark:text-white"><Icons.Printer /> <span>3D Yönetici</span></div>
+                        <div className="flex items-center gap-2">
+                             <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg overflow-x-auto hide-scrollbar max-w-[200px] sm:max-w-none">
+                                {['calculator','machines','inventory','history','discover'].map(t => (
+                                    <button key={t} onClick={()=>setActiveTab(t)} className={`p-2 rounded-md transition-all ${activeTab===t ? 'bg-white dark:bg-dark-card shadow text-blue-600' : 'text-slate-500'}`}>
+                                        {t==='calculator'?<Icons.Calculator/> : t==='machines'?<Icons.Tool/> : t==='history'?<Icons.History/> : t==='inventory'?<Icons.Archive/> : <Icons.Search/>}
+                                    </button>
+                                ))}
+                             </div>
+                             <ThemeToggle isDark={isDark} toggle={toggleTheme} />
                         </div>
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="max-w-5xl mx-auto p-4 md:p-6">
-                    {activeTab === 'calculator' && (
-                        <CalculatorView 
-                            data={calcData} 
-                            handlers={calcHandlers} 
-                            profiles={profiles}
-                            onSaveProfile={saveProfile}
-                            onLoadProfile={loadProfile}
-                            inventory={inventory}
-                            onDeductStock={deductStock}
-                        />
-                    )}
-                    {activeTab === 'inventory' && <InventoryView inventory={inventory} setInventory={setInventory} />}
+                <div className="max-w-5xl mx-auto p-4 md:p-6 mt-4">
+                    {activeTab === 'calculator' && <CalculatorView />}
+                    {activeTab === 'machines' && <MachinesView />}
+                    {activeTab === 'history' && <HistoryView />}
+                    {activeTab === 'inventory' && <InventoryView />}
                     {activeTab === 'discover' && <DiscoverView />}
                 </div>
+                
+                {/* Mobile Bottom Bar */}
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card border-t dark:border-slate-800 p-4 flex justify-between items-center z-40 safe-bottom">
+                    <div><p className="text-xs text-slate-500 uppercase">Toplam</p><p className="text-2xl font-bold dark:text-white">{formatMoney(cartTotals.tFinal)}</p></div>
+                    <button onClick={()=>setShowQuoteModal(true)} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">Teklif</button>
+                </div>
 
+                {/* Quote Modal */}
+                {showQuoteModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <div className="bg-white dark:bg-dark-card w-full max-w-md rounded-2xl p-6 shadow-2xl animate-slide-up">
+                            <h3 className="font-bold text-xl mb-4 dark:text-white">Teklif Hazırla</h3>
+                            <input type="text" placeholder="Müşteri Adı" value={customerName} onChange={e=>setCustomerName(e.target.value)} className="w-full p-3 border rounded-xl mb-4 dark:bg-dark-input dark:border-slate-700 dark:text-white" />
+                            <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl mb-4 text-sm font-mono dark:text-slate-300">
+                                {cartTotals.items.map((i,idx)=><div key={idx} className="flex justify-between mb-1"><span>{i.name}</span><span>{formatMoney(i.final)}</span></div>)}
+                                <div className="border-t dark:border-slate-600 my-2 pt-2 flex justify-between font-bold text-lg"><span>TOPLAM</span><span>{formatMoney(cartTotals.tFinal)}</span></div>
+                            </div>
+                            <div className="flex gap-3">
+                                <button onClick={()=>setShowQuoteModal(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 rounded-xl dark:text-white">Kapat</button>
+                                <button onClick={()=>{saveToHistory(); setShowQuoteModal(false);}} className="flex-1 py-3 bg-blue-600 text-white rounded-xl">Kaydet & Bitir</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                
+                {/* Profile Modal */}
+                {showProfileModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <div className="bg-white dark:bg-dark-card w-full max-w-sm rounded-2xl p-6">
+                            <h3 className="font-bold mb-4 dark:text-white">Profili Kaydet</h3>
+                            <input value={profileName} onChange={e=>setProfileName(e.target.value)} placeholder="Örn: Ender 3 - TPU" className="w-full p-3 border rounded-xl mb-4 dark:bg-dark-input dark:text-white dark:border-slate-700"/>
+                            <button onClick={()=>{setProfiles([...profiles, {id:generateId(), name:profileName, s:{filamentPrice, power}}]); setShowProfileModal(false);}} className="w-full bg-blue-600 text-white py-3 rounded-xl">Kaydet</button>
+                            <button onClick={()=>setShowProfileModal(false)} className="w-full mt-2 text-slate-500">İptal</button>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
