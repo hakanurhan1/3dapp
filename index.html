@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>3D Atölye Pro</title>
+    <title>3D Baskı Yöneticisi</title>
     
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -14,6 +14,29 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Tailwind Config for Dark Mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            input: '#334155',
+                            text: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Font & Animations -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
@@ -21,7 +44,6 @@
         body { 
             font-family: 'Outfit', sans-serif; 
             -webkit-tap-highlight-color: transparent;
-            background-color: #f8fafc;
         }
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -44,11 +66,19 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-
-        .drag-active { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
+        
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .dark .glass {
+            background: rgba(30, 41, 59, 0.7);
+        }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-300">
 
 <div id="root"></div>
 
@@ -60,8 +90,6 @@
         Zap: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
         Clock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
         Settings: () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
-        ChevronUp: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>,
-        ChevronDown: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>,
         Tag: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>,
         Search: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
         ExternalLink: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>,
@@ -73,20 +101,30 @@
         Upload: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>,
         Trash: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
         Copy: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>,
-        AlertCircle: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        AlertCircle: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
+        Moon: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>,
+        Sun: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
     };
 
     // --- SHARED DATA & HELPERS ---
     const formatMoney = (val) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(val);
-    
-    // Basit bir benzersiz ID oluşturucu
     const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
     // --- COMPONENTS ---
 
+    const ThemeToggle = ({ isDark, toggle }) => (
+        <button 
+            onClick={toggle}
+            className="p-2 rounded-full transition-colors bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300"
+            title={isDark ? "Aydınlık Mod" : "Karanlık Mod"}
+        >
+            {isDark ? <Icons.Sun /> : <Icons.Moon />}
+        </button>
+    );
+
     const InputField = ({ label, value, onChange, unit, icon: Icon, step = "1", type="number", disabled=false }) => (
         <div className="relative group">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5 block ml-1">{label}</label>
+            <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 block ml-1">{label}</label>
             <div className={`relative flex items-center ${disabled ? 'opacity-60' : ''}`}>
                 {Icon && (
                     <div className="absolute left-3 text-slate-400 group-focus-within:text-blue-500 transition-colors">
@@ -99,11 +137,11 @@
                     onChange={(e) => onChange(e.target.value)}
                     step={step}
                     disabled={disabled}
-                    className={`w-full bg-white text-slate-900 text-lg font-medium rounded-xl border-2 border-slate-100 focus:border-blue-500 focus:ring-0 outline-none py-3.5 ${Icon ? 'pl-10' : 'pl-4'} pr-12 shadow-sm transition-all`}
+                    className={`w-full bg-white dark:bg-dark-input text-slate-900 dark:text-white text-lg font-medium rounded-xl border-2 border-slate-100 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-0 outline-none py-3.5 ${Icon ? 'pl-10' : 'pl-4'} pr-12 shadow-sm transition-all`}
                     placeholder="0"
                 />
                 {unit && (
-                    <div className="absolute right-4 text-sm font-semibold text-slate-400 bg-slate-50 px-2 py-1 rounded-md">
+                    <div className="absolute right-4 text-sm font-semibold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md">
                         {unit}
                     </div>
                 )}
@@ -111,9 +149,9 @@
         </div>
     );
 
-    const DetailRow = ({ label, value, color = "text-slate-800", bold = false }) => (
-        <div className="flex justify-between items-center py-2 border-b border-slate-50 last:border-0">
-            <span className="text-slate-500 text-sm">{label}</span>
+    const DetailRow = ({ label, value, color = "text-slate-800 dark:text-slate-200", bold = false }) => (
+        <div className="flex justify-between items-center py-2 border-b border-slate-50 dark:border-slate-700/50 last:border-0">
+            <span className="text-slate-500 dark:text-slate-400 text-sm">{label}</span>
             <span className={`text-base ${color} ${bold ? 'font-bold' : 'font-medium'}`}>{value}</span>
         </div>
     );
@@ -130,11 +168,8 @@
         const parseGCode = (text) => {
             let timeSeconds = 0;
             let filamentGrams = 0;
-
-            // 1. Süre Analizi (Farklı Slicer formatları)
             const curaTime = text.match(/;TIME:(\d+)/);
             const prusaTime = text.match(/; estimated printing time = (.*)/);
-
             if (curaTime) {
                 timeSeconds = parseInt(curaTime[1]);
             } else if (prusaTime) {
@@ -144,17 +179,12 @@
                 const s = timeStr.match(/(\d+)s/) ? parseInt(timeStr.match(/(\d+)s/)[1]) : 0;
                 timeSeconds = (h * 3600) + (m * 60) + s;
             }
-
-            // 2. Gramaj Analizi
             const prusaWeight = text.match(/; filament used \[g\] = ([\d\.]+)/);
             const curaWeight = text.match(/;Filament weight = ([\d\.]+)g/);
-            // Bambu Studio / Orca bazen gramajı farklı yazar
             const orcaWeight = text.match(/; total filament used \[g\] = ([\d\.]+)/);
-
             if (prusaWeight) filamentGrams = parseFloat(prusaWeight[1]);
             else if (curaWeight) filamentGrams = parseFloat(curaWeight[1]);
             else if (orcaWeight) filamentGrams = parseFloat(orcaWeight[1]);
-
             return { timeSeconds, filamentGrams };
         };
 
@@ -162,7 +192,6 @@
             e.preventDefault();
             setIsDragOver(false);
             setError(null);
-            
             const file = e.dataTransfer.files[0];
             if (file) processFile(file);
         };
@@ -175,35 +204,28 @@
 
         const processFile = (file) => {
             const ext = file.name.split('.').pop().toLowerCase();
-
             if (ext === 'stl' || ext === '3mf' || ext === 'obj') {
-                setError({
-                    title: "Ham Model Dosyası Algılandı",
-                    msg: "STL ve 3MF dosyaları sadece şekil verisi içerir. Baskı süresi ve malzeme ağırlığını hesaplamak için Slicer (Dilimleyici) programından aldığınız .gcode dosyasını yüklemelisiniz."
-                });
+                setError({ title: "Ham Model Dosyası", msg: "Baskı süresini hesaplamak için lütfen Slicer'dan aldığınız .gcode dosyasını yükleyin." });
                 return;
             }
-
             if (ext === 'gcode' || ext === 'bgcode') {
                 setFileName(file.name);
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    // bgcode (Binary Gcode) şu an parse edilmiyor, sadece text gcode
                     if(ext === 'bgcode') {
-                        setError({ title: "Binary GCode Desteklenmiyor", msg: "Lütfen standart (Text) G-Code formatını kullanın."});
+                        setError({ title: "Binary GCode", msg: "Lütfen standart (Text) G-Code formatını kullanın."});
                         return;
                     }
-
                     const result = parseGCode(e.target.result);
                     if (result.timeSeconds === 0 && result.filamentGrams === 0) {
-                         setError({ title: "Veri Bulunamadı", msg: "Dosya içinde süre veya gramaj bilgisi okunamadı. Farklı bir Slicer deneyin."});
+                         setError({ title: "Veri Bulunamadı", msg: "Dosya içinde süre/gramaj bilgisi bulunamadı."});
                     } else {
                         onFileLoaded(result);
                     }
                 };
                 reader.readAsText(file);
             } else {
-                setError({ title: "Geçersiz Dosya", msg: "Lütfen .gcode uzantılı bir dosya yükleyin." });
+                setError({ title: "Geçersiz Dosya", msg: "Lütfen .gcode dosyası yükleyin." });
             }
         };
 
@@ -212,39 +234,38 @@
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6 group ${error ? 'border-red-300 bg-red-50' : (isDragOver ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-blue-400 hover:bg-slate-50')}`}
+                className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer mb-6 group ${error ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : (isDragOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50')}`}
             >
                 <input type="file" onChange={handleInput} accept=".gcode,.stl,.3mf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                
                 <div className="flex flex-col items-center gap-2">
                     {error ? (
                         <>
-                            <div className="p-3 rounded-full bg-red-100 text-red-500">
+                            <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500">
                                 <Icons.AlertCircle />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-red-600">{error.title}</p>
-                                <p className="text-xs text-red-500 max-w-xs mx-auto mt-1">{error.msg}</p>
+                                <p className="text-sm font-bold text-red-600 dark:text-red-400">{error.title}</p>
+                                <p className="text-xs text-red-500 dark:text-red-300 max-w-xs mx-auto mt-1">{error.msg}</p>
                             </div>
                         </>
                     ) : fileName ? (
                         <>
-                            <div className="p-3 rounded-full bg-green-100 text-green-600">
+                            <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
                                 <Icons.FileText />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-800">{fileName}</p>
-                                <p className="text-xs text-green-600">Analiz Başarılı</p>
+                                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{fileName}</p>
+                                <p className="text-xs text-green-600 dark:text-green-400">Analiz Başarılı</p>
                             </div>
                         </>
                     ) : (
                         <>
-                            <div className="p-3 rounded-full bg-slate-100 text-slate-400 group-hover:text-blue-500">
+                            <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-blue-500 transition-colors">
                                 <Icons.Upload />
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-slate-600">G-Code Dosyasını Buraya Bırak</p>
-                                <p className="text-xs text-slate-400 mt-1">Süre ve ağırlık otomatik hesaplanır</p>
+                                <p className="text-sm font-medium text-slate-600 dark:text-slate-300">G-Code Dosyasını Buraya Bırak</p>
+                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Süre ve ağırlık otomatik hesaplanır</p>
                             </div>
                         </>
                     )}
@@ -273,7 +294,12 @@
         const withFailure = baseCost * (1 + (failure / 100));
         const finalPrice = withFailure * (1 + (markup / 100));
 
-        // G-Code Handler
+        // Grafikler için Yüzdeler
+        const totalForGraph = materialCost + energyCost + laborCost || 1; 
+        const pMat = (materialCost / totalForGraph) * 100;
+        const pEner = (energyCost / totalForGraph) * 100;
+        const pLab = (laborCost / totalForGraph) * 100;
+
         const handleGCodeLoaded = (result) => {
             if (result.filamentGrams > 0) setPrintWeight(result.filamentGrams);
             if (result.timeSeconds > 0) {
@@ -291,33 +317,25 @@
         };
 
         const copyQuote = () => {
-            const text = `
-📦 *3D Baskı Teklifi*
-👤 Sayın ${customerName || 'Müşteri'},
+            const text = `📦 *3D Baskı Teklifi*
+👤 ${customerName || 'Müşteri'}
 
 🔹 *Proje Detayları*
-• Baskı Süresi: ${hours}sa ${minutes}dk
-• Malzeme Ağırlığı: ${printWeight}g
+• Süre: ${hours}sa ${minutes}dk
+• Ağırlık: ${printWeight}g
 
 💰 *Fiyatlandırma*
 • Malzeme: ${formatMoney(materialCost)}
-• Enerji & İşçilik: ${formatMoney(energyCost + laborCost)}
+• Enerji & İş: ${formatMoney(energyCost + laborCost)}
 • Toplam Maliyet: ${formatMoney(withFailure)}
 
-🏷️ *TOPLAM TUTAR: ${formatMoney(finalPrice)}*
-            `.trim();
-            
-            // Clipboard API (Güvenli Context Gerekir, iframe içinde fallback kullanıyoruz)
+🏷️ *TOPLAM TUTAR: ${formatMoney(finalPrice)}*`.trim();
             const textArea = document.createElement("textarea");
             textArea.value = text;
             document.body.appendChild(textArea);
             textArea.select();
-            try {
-                document.execCommand('copy');
-                alert("Teklif panoya kopyalandı!");
-            } catch (err) {
-                alert("Kopyalama başarısız oldu.");
-            }
+            try { document.execCommand('copy'); alert("Teklif panoya kopyalandı!"); } 
+            catch (err) { alert("Kopyalama başarısız oldu."); }
             document.body.removeChild(textArea);
         };
 
@@ -330,12 +348,12 @@
                         <select 
                             value={activeProfileId || ""}
                             onChange={(e) => onLoadProfile(e.target.value)}
-                            className="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            className="bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                         >
                             <option value="">Varsayılan Ayarlar</option>
                             {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
-                        <button onClick={() => setShowProfileModal(true)} className="p-2.5 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100">
+                        <button onClick={() => setShowProfileModal(true)} className="p-2.5 text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50">
                             <Icons.Save />
                         </button>
                     </div>
@@ -344,12 +362,12 @@
                 <div className="lg:grid lg:grid-cols-3 lg:gap-8">
                     {/* GİRDİLER */}
                     <div className="lg:col-span-2 space-y-6 pb-32 lg:pb-0">
-                        
                         <GCodeDropZone onFileLoaded={handleGCodeLoaded} />
 
-                        <section className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100/50">
-                            <h2 className="text-sm font-bold text-blue-600 uppercase mb-4 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Materyal
+                        {/* MALZEME */}
+                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
+                            <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase mb-4 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400"></span> Materyal
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                 <InputField label="Filament Fiyatı" value={filamentPrice} onChange={setFilamentPrice} unit="₺" />
@@ -358,7 +376,8 @@
                             </div>
                         </section>
 
-                        <section className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100/50">
+                        {/* ENERJİ */}
+                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
                             <h2 className="text-sm font-bold text-amber-500 uppercase mb-4 flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Enerji & Süre
                             </h2>
@@ -372,7 +391,8 @@
                             </div>
                         </section>
 
-                        <section className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100/50">
+                        {/* FİNANSAL */}
+                        <section className="bg-white dark:bg-dark-card rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
                             <h2 className="text-sm font-bold text-emerald-500 uppercase mb-4 flex items-center gap-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Finansal
                             </h2>
@@ -387,27 +407,43 @@
                     {/* SONUÇ PANELİ */}
                     <div className="hidden lg:block lg:col-span-1">
                         <div className="sticky top-24 space-y-4">
-                            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
-                                <h3 className="text-lg font-bold text-slate-900 mb-6">Maliyet Özeti</h3>
+                            <div className="bg-white dark:bg-dark-card rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/30 border border-slate-100 dark:border-slate-700/50 transition-colors">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Maliyet Özeti</h3>
+                                
+                                {/* Visual Cost Bar */}
+                                <div className="mb-6">
+                                    <div className="flex h-3 w-full rounded-full overflow-hidden bg-slate-100 dark:bg-slate-700 mb-2">
+                                        <div style={{width: `${pMat}%`}} className="bg-blue-500" title="Malzeme"></div>
+                                        <div style={{width: `${pEner}%`}} className="bg-amber-500" title="Enerji"></div>
+                                        <div style={{width: `${pLab}%`}} className="bg-emerald-500" title="İşçilik"></div>
+                                    </div>
+                                    <div className="flex justify-between text-[10px] text-slate-400 uppercase tracking-wider">
+                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-500"></span> Malzeme</span>
+                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Enerji</span>
+                                        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> İşçilik</span>
+                                    </div>
+                                </div>
+
                                 <div className="space-y-1 mb-8">
                                     <DetailRow label="Malzeme" value={formatMoney(materialCost)} />
                                     <DetailRow label="Elektrik" value={formatMoney(energyCost)} />
                                     <DetailRow label="İşçilik" value={formatMoney(laborCost)} />
-                                    <div className="h-px bg-slate-100 my-3"></div>
-                                    <DetailRow label="Ham Maliyet" value={formatMoney(baseCost)} color="text-slate-500" />
+                                    <div className="h-px bg-slate-100 dark:bg-slate-700 my-3"></div>
+                                    <DetailRow label="Ham Maliyet" value={formatMoney(baseCost)} color="text-slate-500 dark:text-slate-400" />
                                     <DetailRow label="Risk Dahil" value={formatMoney(withFailure)} bold />
                                 </div>
-                                <div className="bg-blue-600 rounded-2xl p-5 text-center text-white shadow-lg shadow-blue-600/30">
+                                
+                                <div className="bg-blue-600 dark:bg-blue-700 rounded-2xl p-5 text-center text-white shadow-lg shadow-blue-600/30 dark:shadow-blue-900/30">
                                     <p className="text-blue-100 text-xs uppercase tracking-wider font-semibold mb-1">Satış Fiyatı</p>
                                     <p className="text-4xl font-bold tracking-tight">{formatMoney(finalPrice)}</p>
-                                    <div className="mt-3 inline-block bg-blue-700/50 rounded-lg px-3 py-1">
+                                    <div className="mt-3 inline-block bg-blue-700/50 dark:bg-blue-800/50 rounded-lg px-3 py-1">
                                         <p className="text-xs text-blue-100">Net Kar: {formatMoney(finalPrice - withFailure)}</p>
                                     </div>
                                 </div>
                                 
                                 <button 
                                     onClick={() => setShowQuoteModal(true)}
-                                    className="w-full mt-4 flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl hover:bg-slate-800 transition-colors"
+                                    className="w-full mt-4 flex items-center justify-center gap-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 py-3 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
                                 >
                                     <Icons.FileText /> Teklif Oluştur
                                 </button>
@@ -415,7 +451,7 @@
                                 {inventory.length > 0 && (
                                     <button 
                                         onClick={() => onDeductStock(printWeight)}
-                                        className="w-full mt-2 flex items-center justify-center gap-2 bg-white border-2 border-slate-200 text-slate-600 py-3 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors font-medium text-sm"
+                                        className="w-full mt-2 flex items-center justify-center gap-2 bg-transparent border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm"
                                     >
                                         <Icons.Archive /> Stoktan Düş
                                     </button>
@@ -427,20 +463,20 @@
 
                 {/* MODAL: PROFILE SAVE */}
                 {showProfileModal && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
-                            <h3 className="text-lg font-bold mb-4">Ayarları Kaydet</h3>
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+                        <div className="bg-white dark:bg-dark-card rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in border border-slate-100 dark:border-slate-700">
+                            <h3 className="text-lg font-bold mb-4 dark:text-white">Ayarları Kaydet</h3>
                             <input 
                                 type="text" 
                                 value={profileName} 
                                 onChange={(e) => setProfileName(e.target.value)} 
                                 placeholder="Profil Adı (örn: Ender 3 PLA)" 
-                                className="w-full border p-3 rounded-xl mb-4"
+                                className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-3 rounded-xl mb-4 outline-none dark:text-white"
                                 autoFocus
                             />
                             <div className="flex gap-3">
-                                <button onClick={() => setShowProfileModal(false)} className="flex-1 py-3 text-slate-600 bg-slate-100 rounded-xl">İptal</button>
-                                <button onClick={handleSaveProfile} className="flex-1 py-3 text-white bg-blue-600 rounded-xl font-medium">Kaydet</button>
+                                <button onClick={() => setShowProfileModal(false)} className="flex-1 py-3 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl">İptal</button>
+                                <button onClick={handleSaveProfile} className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium">Kaydet</button>
                             </div>
                         </div>
                     </div>
@@ -448,31 +484,29 @@
 
                 {/* MODAL: QUOTE GENERATOR */}
                 {showQuoteModal && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl animate-fade-in overflow-hidden">
-                            <div className="bg-slate-900 p-6 text-white">
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+                        <div className="bg-white dark:bg-dark-card rounded-2xl w-full max-w-md shadow-2xl animate-fade-in overflow-hidden border border-slate-100 dark:border-slate-700">
+                            <div className="bg-slate-900 dark:bg-slate-950 p-6 text-white">
                                 <h3 className="text-xl font-bold flex items-center gap-2"><Icons.FileText/> Teklif Hazırla</h3>
                             </div>
                             <div className="p-6">
-                                <label className="block text-sm font-medium text-slate-600 mb-2">Müşteri Adı</label>
+                                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">Müşteri Adı</label>
                                 <input 
                                     type="text" 
                                     value={customerName} 
                                     onChange={(e) => setCustomerName(e.target.value)} 
-                                    className="w-full border p-3 rounded-xl mb-6"
+                                    className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 dark:text-white p-3 rounded-xl mb-6 outline-none"
                                     placeholder="Ad Soyad"
                                 />
-                                
-                                <div className="bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300 mb-6 font-mono text-sm">
-                                    <p className="font-bold border-b pb-2 mb-2">ÖZET</p>
+                                <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 mb-6 font-mono text-sm text-slate-700 dark:text-slate-300">
+                                    <p className="font-bold border-b dark:border-slate-700 pb-2 mb-2">ÖZET</p>
                                     <div className="flex justify-between mb-1"><span>Malzeme:</span> <span>{formatMoney(materialCost)}</span></div>
                                     <div className="flex justify-between mb-1"><span>Enerji+İş:</span> <span>{formatMoney(energyCost + laborCost)}</span></div>
-                                    <div className="flex justify-between pt-2 border-t font-bold text-lg"><span>TOPLAM:</span> <span>{formatMoney(finalPrice)}</span></div>
+                                    <div className="flex justify-between pt-2 border-t dark:border-slate-700 font-bold text-lg"><span>TOPLAM:</span> <span>{formatMoney(finalPrice)}</span></div>
                                 </div>
-
                                 <div className="flex gap-3">
-                                    <button onClick={() => setShowQuoteModal(false)} className="flex-1 py-3 text-slate-600 bg-slate-100 rounded-xl font-medium">Kapat</button>
-                                    <button onClick={copyQuote} className="flex-1 py-3 text-white bg-blue-600 rounded-xl font-medium flex items-center justify-center gap-2">
+                                    <button onClick={() => setShowQuoteModal(false)} className="flex-1 py-3 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl font-medium">Kapat</button>
+                                    <button onClick={copyQuote} className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-medium flex items-center justify-center gap-2">
                                         <Icons.Copy /> Kopyala
                                     </button>
                                 </div>
@@ -481,13 +515,13 @@
                     </div>
                 )}
                 
-                {/* MOBİL BOTTOM BAR (Önceki koddan korundu) */}
-                <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)] border-t border-slate-100 z-40 lg:hidden safe-bottom-padding p-4 flex items-center justify-between">
+                {/* MOBİL BOTTOM BAR */}
+                <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)] border-t border-slate-100 dark:border-slate-800 z-40 lg:hidden safe-bottom-padding p-4 flex items-center justify-between">
                     <div>
-                        <p className="text-xs text-slate-500 font-medium uppercase">Satış Fiyatı</p>
-                        <p className="text-2xl font-bold text-slate-900">{formatMoney(finalPrice)}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase">Satış Fiyatı</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{formatMoney(finalPrice)}</p>
                     </div>
-                    <button onClick={() => setShowQuoteModal(true)} className="bg-slate-900 text-white px-5 py-3 rounded-xl font-medium shadow-lg flex items-center gap-2">
+                    <button onClick={() => setShowQuoteModal(true)} className="bg-slate-900 dark:bg-blue-600 text-white px-5 py-3 rounded-xl font-medium shadow-lg flex items-center gap-2">
                          Teklif Al
                     </button>
                 </div>
@@ -517,58 +551,56 @@
         };
 
         const deleteSpool = (id) => {
-            if(confirm("Bu makarayı silmek istediğine emin misin?")) {
-                setInventory(inventory.filter(i => i.id !== id));
-            }
+            if(confirm("Bu makarayı silmek istediğine emin misin?")) setInventory(inventory.filter(i => i.id !== id));
         };
 
         return (
             <div className="animate-fade-in pb-20">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-slate-800">Filament Stoğum</h2>
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-white">Filament Stoğum</h2>
                     <button onClick={() => setShowAdd(!showAdd)} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
                         {showAdd ? 'İptal' : '+ Yeni Makara'}
                     </button>
                 </div>
 
                 {showAdd && (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 mb-8 animate-slide-up">
-                        <h3 className="font-bold mb-4">Yeni Makara Ekle</h3>
+                    <div className="bg-white dark:bg-dark-card p-6 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 mb-8 animate-slide-up">
+                        <h3 className="font-bold mb-4 dark:text-white">Yeni Makara Ekle</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label className="block text-xs text-slate-500 mb-1">Marka/Tür</label>
-                                <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className="w-full border p-2 rounded-lg" placeholder="örn: Esun PLA+" />
+                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Marka/Tür</label>
+                                <input type="text" value={newName} onChange={e=>setNewName(e.target.value)} className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg outline-none dark:text-white" placeholder="örn: Esun PLA+" />
                             </div>
                             <div>
-                                <label className="block text-xs text-slate-500 mb-1">Renk</label>
+                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Renk</label>
                                 <div className="flex gap-2">
-                                    <input type="color" value={newColor} onChange={e=>setNewColor(e.target.value)} className="h-10 w-10 rounded cursor-pointer" />
-                                    <input type="text" value={newColor} readOnly className="flex-1 border p-2 rounded-lg text-xs bg-slate-50" />
+                                    <input type="color" value={newColor} onChange={e=>setNewColor(e.target.value)} className="h-10 w-10 rounded cursor-pointer border-none bg-transparent" />
+                                    <input type="text" value={newColor} readOnly className="flex-1 bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg text-xs dark:text-white" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs text-slate-500 mb-1">Ağırlık (g)</label>
-                                <input type="number" value={newWeight} onChange={e=>setNewWeight(e.target.value)} className="w-full border p-2 rounded-lg" />
+                                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Ağırlık (g)</label>
+                                <input type="number" value={newWeight} onChange={e=>setNewWeight(e.target.value)} className="w-full bg-slate-50 dark:bg-dark-input border dark:border-slate-700 p-2 rounded-lg outline-none dark:text-white" />
                             </div>
                         </div>
-                        <button onClick={addSpool} className="w-full bg-slate-900 text-white py-3 rounded-xl font-medium">Listeye Ekle</button>
+                        <button onClick={addSpool} className="w-full bg-slate-900 dark:bg-blue-600 text-white py-3 rounded-xl font-medium">Listeye Ekle</button>
                     </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {inventory.length === 0 ? (
-                        <div className="col-span-2 text-center py-10 text-slate-400 bg-slate-50 rounded-2xl border border-dashed">
+                        <div className="col-span-2 text-center py-10 text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-dark-card/50 rounded-2xl border border-dashed dark:border-slate-700">
                             <p>Henüz kayıtlı filament yok.</p>
                         </div>
                     ) : (
                         inventory.map(spool => {
                             const percent = Math.max(0, Math.min(100, (spool.currentWeight / spool.maxWeight) * 100));
                             return (
-                                <div key={spool.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 relative group overflow-hidden">
+                                <div key={spool.id} className="bg-white dark:bg-dark-card p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 relative group overflow-hidden transition-colors">
                                     <div className="absolute top-0 left-0 w-1 h-full" style={{backgroundColor: spool.color}}></div>
                                     <div className="flex justify-between items-start mb-2 pl-3">
                                         <div>
-                                            <h4 className="font-bold text-slate-800">{spool.name}</h4>
+                                            <h4 className="font-bold text-slate-800 dark:text-slate-200">{spool.name}</h4>
                                             <p className="text-xs text-slate-400">{spool.purchaseDate}</p>
                                         </div>
                                         <button onClick={() => deleteSpool(spool.id)} className="text-slate-300 hover:text-red-500"><Icons.Trash /></button>
@@ -576,9 +608,9 @@
                                     <div className="pl-3 mt-4">
                                         <div className="flex justify-between text-xs font-semibold mb-1">
                                             <span style={{color: spool.color}}>{Math.round(percent)}% Kaldı</span>
-                                            <span className="text-slate-500">{spool.currentWeight}g / {spool.maxWeight}g</span>
+                                            <span className="text-slate-500 dark:text-slate-400">{spool.currentWeight}g / {spool.maxWeight}g</span>
                                         </div>
-                                        <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
                                             <div className="h-2.5 rounded-full transition-all duration-500" style={{width: `${percent}%`, backgroundColor: spool.color}}></div>
                                         </div>
                                     </div>
@@ -597,7 +629,6 @@
         const handleSearch = (e) => {
             e.preventDefault();
             if(!searchTerm) return;
-            // Open 3 tabs
             window.open(`https://www.thingiverse.com/search?q=${searchTerm}&type=things&sort=relevant`, '_blank');
             window.open(`https://www.printables.com/search/models?q=${searchTerm}`, '_blank');
             window.open(`https://makerworld.com/en/search/models?keyword=${searchTerm}`, '_blank');
@@ -614,13 +645,11 @@
 
         return (
             <div className="animate-fade-in pb-12">
-                {/* Meta Search Section */}
-                <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden shadow-xl">
+                <div className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900 dark:to-slate-900 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden shadow-xl">
                     <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-10">
                         <h2 className="text-2xl font-bold mb-2">Model Arama Motoru</h2>
-                        <p className="text-slate-300 mb-6 text-sm">Tek bir arama ile Thingiverse, Printables ve MakerWorld üzerinde aynı anda arama yapın.</p>
-                        
+                        <p className="text-slate-300 dark:text-slate-200 mb-6 text-sm">Tek bir arama ile Thingiverse, Printables ve MakerWorld üzerinde aynı anda arama yapın.</p>
                         <form onSubmit={handleSearch} className="relative max-w-lg">
                             <input 
                                 type="text" 
@@ -639,13 +668,12 @@
                     </div>
                 </div>
 
-                {/* Quick Links */}
-                <h3 className="text-lg font-bold text-slate-900 mb-4 px-1">Popüler Platformlar</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1">Popüler Platformlar</h3>
                 <div className="grid grid-cols-3 gap-4 mb-10">
                     {[
-                        { name: "Thingiverse", url: "https://www.thingiverse.com", color: "bg-blue-50 text-blue-700 hover:bg-blue-100" },
-                        { name: "Printables", url: "https://www.printables.com", color: "bg-orange-50 text-orange-700 hover:bg-orange-100" },
-                        { name: "MakerWorld", url: "https://makerworld.com", color: "bg-green-50 text-green-700 hover:bg-green-100" }
+                        { name: "Thingiverse", url: "https://www.thingiverse.com", color: "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300" },
+                        { name: "Printables", url: "https://www.printables.com", color: "bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300" },
+                        { name: "MakerWorld", url: "https://makerworld.com", color: "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300" }
                     ].map((site) => (
                         <a key={site.name} href={site.url} target="_blank" className={`${site.color} p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer group`}>
                             <Icons.Globe />
@@ -655,23 +683,22 @@
                     ))}
                 </div>
 
-                {/* Featured List */}
-                <h3 className="text-lg font-bold text-slate-900 mb-4 px-1 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1 flex items-center justify-between">
                     <span>Demirbaş Modeller</span>
-                    <span className="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded-md">Editörün Seçimi</span>
+                    <span className="text-xs font-normal text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-md">Editörün Seçimi</span>
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {topModels.map(model => (
-                        <a key={model.id} href={model.url} target="_blank" className="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 hover:shadow-md transition-all group">
-                            <div className="aspect-square bg-slate-100 rounded-xl mb-3 overflow-hidden relative">
+                        <a key={model.id} href={model.url} target="_blank" className="bg-white dark:bg-dark-card rounded-2xl p-3 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all group">
+                            <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-xl mb-3 overflow-hidden relative">
                                 <img src={model.img} alt={model.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                     onError={(e) => {e.target.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=Model';}} />
+                                     onError={(e) => {e.target.src = 'https://placehold.co/400x400/1e293b/475569?text=Model';}} />
                                 <span className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full">
                                     {model.tag}
                                 </span>
                             </div>
-                            <h4 className="font-bold text-slate-800 text-sm truncate">{model.name}</h4>
-                            <p className="text-xs text-slate-500">{model.author}</p>
+                            <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{model.name}</h4>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{model.author}</p>
                         </a>
                     ))}
                 </div>
@@ -680,8 +707,32 @@
     };
 
     function App() {
-        // State
-        const [activeTab, setActiveTab] = React.useState('calculator'); // 'calculator' | 'inventory' | 'discover'
+        const [activeTab, setActiveTab] = React.useState('calculator');
+        const [isDark, setIsDark] = React.useState(false);
+
+        // Dark Mode Logic
+        React.useEffect(() => {
+            const savedTheme = localStorage.getItem('3dPro_Theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                setIsDark(true);
+                document.documentElement.classList.add('dark');
+            } else {
+                setIsDark(false);
+                document.documentElement.classList.remove('dark');
+            }
+        }, []);
+
+        const toggleTheme = () => {
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('3dPro_Theme', 'light');
+                setIsDark(false);
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('3dPro_Theme', 'dark');
+                setIsDark(true);
+            }
+        };
 
         // Calculator State
         const [filamentPrice, setFilamentPrice] = React.useState(500);
@@ -696,12 +747,11 @@
         const [labor, setLabor] = React.useState(0);
         const [activeProfileId, setActiveProfileId] = React.useState(null);
 
-        // Advanced Data
+        // Data
         const [profiles, setProfiles] = React.useState([]);
         const [inventory, setInventory] = React.useState([]);
 
-        // --- PERSISTENCE (LocalStorage) ---
-        // 1. Load on mount
+        // Persistence
         React.useEffect(() => {
             const savedSettings = localStorage.getItem('3dPro_Settings');
             const savedProfiles = localStorage.getItem('3dPro_Profiles');
@@ -717,28 +767,16 @@
             if (savedInventory) setInventory(JSON.parse(savedInventory));
         }, []);
 
-        // 2. Save on Change (Debounced slightly by React nature)
         React.useEffect(() => {
             const settings = { filamentPrice, spoolWeight, power, elecRate, markup, failure, labor };
             localStorage.setItem('3dPro_Settings', JSON.stringify(settings));
         }, [filamentPrice, spoolWeight, power, elecRate, markup, failure, labor]);
 
-        React.useEffect(() => {
-            localStorage.setItem('3dPro_Profiles', JSON.stringify(profiles));
-        }, [profiles]);
+        React.useEffect(() => { localStorage.setItem('3dPro_Profiles', JSON.stringify(profiles)); }, [profiles]);
+        React.useEffect(() => { localStorage.setItem('3dPro_Inventory', JSON.stringify(inventory)); }, [inventory]);
 
-        React.useEffect(() => {
-            localStorage.setItem('3dPro_Inventory', JSON.stringify(inventory));
-        }, [inventory]);
-
-        // --- HANDLERS ---
-        
         const saveProfile = (name) => {
-            const newProfile = {
-                id: generateId(),
-                name,
-                settings: { filamentPrice, spoolWeight, power, elecRate, markup, failure, labor }
-            };
+            const newProfile = { id: generateId(), name, settings: { filamentPrice, spoolWeight, power, elecRate, markup, failure, labor } };
             setProfiles([...profiles, newProfile]);
             setActiveProfileId(newProfile.id);
         };
@@ -748,40 +786,21 @@
             if (!id) return;
             const p = profiles.find(x => x.id === id);
             if (p) {
-                setFilamentPrice(p.settings.filamentPrice);
-                setSpoolWeight(p.settings.spoolWeight);
-                setPower(p.settings.power);
-                setElecRate(p.settings.elecRate);
-                setMarkup(p.settings.markup);
-                setFailure(p.settings.failure);
-                setLabor(p.settings.labor);
+                setFilamentPrice(p.settings.filamentPrice); setSpoolWeight(p.settings.spoolWeight); setPower(p.settings.power);
+                setElecRate(p.settings.elecRate); setMarkup(p.settings.markup); setFailure(p.settings.failure); setLabor(p.settings.labor);
             }
         };
 
         const deductStock = (amount) => {
-            if (inventory.length === 0) {
-                alert("Önce 'Stok' sekmesinden filament eklemelisin.");
-                setActiveTab('inventory');
-                return;
-            }
-            // Simple logic: Deduct from the first spool or ask user. 
-            // For simplicity in this UI, we deduct from the most recent spool or alert.
-            // Let's create a simple prompt for now since modal logic is heavy.
-            
-            // Find a suitable spool?
-            const spool = inventory[0]; // Take first for now
-            if (spool) {
-                const confirmDed = confirm(`${spool.name} makarasından ${amount}g düşülsün mü?`);
-                if(confirmDed) {
-                    const updatedInv = inventory.map(item => {
-                        if(item.id === spool.id) {
-                            return { ...item, currentWeight: Math.max(0, item.currentWeight - amount) };
-                        }
-                        return item;
-                    });
-                    setInventory(updatedInv);
-                    alert("Stok güncellendi.");
-                }
+            if (inventory.length === 0) { alert("Önce 'Stok' sekmesinden filament eklemelisin."); setActiveTab('inventory'); return; }
+            const spool = inventory[0];
+            if (spool && confirm(`${spool.name} makarasından ${amount}g düşülsün mü?`)) {
+                const updatedInv = inventory.map(item => {
+                    if(item.id === spool.id) return { ...item, currentWeight: Math.max(0, item.currentWeight - amount) };
+                    return item;
+                });
+                setInventory(updatedInv);
+                alert("Stok güncellendi.");
             }
         };
 
@@ -789,30 +808,32 @@
         const calcHandlers = { setFilamentPrice, setSpoolWeight, setPrintWeight, setPower, setElecRate, setHours, setMinutes, setMarkup, setFailure, setLabor };
 
         return (
-            <div className="min-h-screen bg-slate-50">
+            <div className="min-h-screen pb-6">
                 
                 {/* Header */}
-                <div className="bg-white sticky top-0 z-20 border-b border-slate-100 shadow-sm safe-top-padding">
+                <div className="bg-white dark:bg-dark-card sticky top-0 z-20 border-b border-slate-100 dark:border-slate-800 shadow-sm safe-top-padding transition-colors">
                     <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-blue-500/30 shadow-lg">
                                 <Icons.Cube />
                             </div>
-                            <h1 className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">3D Atölye Pro</h1>
-                            <h1 className="text-xl font-bold text-slate-900 tracking-tight sm:hidden">Atölye</h1>
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight hidden sm:block">3D Baskı Yöneticisi</h1>
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight sm:hidden">3D Yönetici</h1>
                         </div>
                         
-                        {/* Tab Switcher */}
-                        <div className="flex bg-slate-100 p-1 rounded-xl">
-                            <button onClick={() => setActiveTab('calculator')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'calculator' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}>
-                                <Icons.Calculator/> <span className="hidden sm:inline">Hesapla</span>
-                            </button>
-                            <button onClick={() => setActiveTab('inventory')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'inventory' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}>
-                                <Icons.Archive/> <span className="hidden sm:inline">Stok</span>
-                            </button>
-                            <button onClick={() => setActiveTab('discover')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'discover' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}>
-                                <Icons.Search/> <span className="hidden sm:inline">Keşfet</span>
-                            </button>
+                        <div className="flex items-center gap-3">
+                            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl transition-colors">
+                                <button onClick={() => setActiveTab('calculator')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'calculator' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                                    <Icons.Calculator/> <span className="hidden sm:inline">Hesapla</span>
+                                </button>
+                                <button onClick={() => setActiveTab('inventory')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'inventory' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                                    <Icons.Archive/> <span className="hidden sm:inline">Stok</span>
+                                </button>
+                                <button onClick={() => setActiveTab('discover')} className={`px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'discover' ? 'bg-white dark:bg-dark-card text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                                    <Icons.Search/> <span className="hidden sm:inline">Keşfet</span>
+                                </button>
+                            </div>
+                            <ThemeToggle isDark={isDark} toggle={toggleTheme} />
                         </div>
                     </div>
                 </div>
