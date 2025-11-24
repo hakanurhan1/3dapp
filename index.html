@@ -103,7 +103,8 @@
         Copy: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>,
         AlertCircle: () => <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
         Moon: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>,
-        Sun: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        Sun: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+        Trending: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
     };
 
     // --- SHARED DATA & HELPERS ---
@@ -634,17 +635,19 @@
             window.open(`https://makerworld.com/en/search/models?keyword=${searchTerm}`, '_blank');
         };
 
-        const topModels = [
-            { id: 1, name: "3DBenchy", author: "CreativeTools", img: "https://cdn.thingiverse.com/renders/62/ab/d7/e3/94/3DBenchy_view_37_preview_card.jpg", url: "https://www.thingiverse.com/thing:763622", tag: "Test" },
-            { id: 2, name: "Calibration Cube", author: "iDig3Dprinting", img: "https://cdn.thingiverse.com/renders/9f/61/8c/2a/85/XYZ_20mm_Calibration_Cube_preview_card.jpg", url: "https://www.thingiverse.com/thing:1278865", tag: "Kalibrasyon" },
-            { id: 3, name: "Flexi Rex", author: "DrLex", img: "https://cdn.thingiverse.com/renders/3b/f1/a0/0b/48/80e9224855727027582548232c918301_preview_card.jpg", url: "https://www.thingiverse.com/thing:2738211", tag: "Oyuncak" },
-            { id: 4, name: "Articulated Dragon", author: "McGybeer", img: "https://cdn.thingiverse.com/assets/26/5e/0a/60/d4/large_display_Dragon_v2.jpg", url: "https://www.thingiverse.com/thing:5401662", tag: "Sanat" },
-            { id: 5, name: "Whistle V2", author: "jzisa", img: "https://cdn.thingiverse.com/renders/f4/05/e6/57/5a/Whistle_v2_preview_card.jpg", url: "https://www.thingiverse.com/thing:1179160", tag: "Araç" },
-            { id: 6, name: "Phone Stand", author: "GoAftens", img: "https://cdn.thingiverse.com/assets/13/a6/63/01/29/large_display_stand.jpg", url: "https://www.thingiverse.com/thing:2120591", tag: "Ofis" },
+        // Statik liste yerine dinamik linkler
+        const trendingLinks = [
+            { name: "Thingiverse Popüler", url: "https://www.thingiverse.com/explore/popular", color: "bg-blue-500 hover:bg-blue-600", desc: "Topluluğun en beğendiği modeller" },
+            { name: "Printables Trendler", url: "https://www.printables.com/model?o=popular", color: "bg-orange-500 hover:bg-orange-600", desc: "Prusa topluluğunun seçtikleri" },
+            { name: "MakerWorld Hot", url: "https://makerworld.com/en/models?orderBy=hot", color: "bg-green-500 hover:bg-green-600", desc: "Bambu Lab için en popülerler" },
+            { name: "Cults3D Best", url: "https://cults3d.com/en/creations/popular/ordering/downloads_count", color: "bg-purple-600 hover:bg-purple-700", desc: "En çok indirilen tasarım dosyaları" },
+            { name: "Thangs Trending", url: "https://thangs.com/?sort=trending", color: "bg-teal-500 hover:bg-teal-600", desc: "Tüm sitelerden popüler modeller" },
+            { name: "MyMiniFactory Popüler", url: "https://www.myminifactory.com/pages/popular", color: "bg-slate-600 hover:bg-slate-700", desc: "Figür ve oyun karakterleri" },
         ];
 
         return (
             <div className="animate-fade-in pb-12">
+                {/* Arama Bölümü - Aynı Kalıyor */}
                 <div className="bg-gradient-to-r from-slate-900 to-slate-800 dark:from-blue-900 dark:to-slate-900 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden shadow-xl">
                     <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-10">
@@ -668,37 +671,55 @@
                     </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1">Popüler Platformlar</h3>
-                <div className="grid grid-cols-3 gap-4 mb-10">
+                {/* YENİ BÖLÜM: Canlı Trendler (Demirbaşların Yerine) */}
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1 flex items-center justify-between">
+                    <span>Canlı Trendler (En Çok İndirilenler)</span>
+                    <span className="text-xs font-normal text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-md flex items-center gap-1">
+                        <Icons.Trending/> Canlı Liste
+                    </span>
+                </h3>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+                    {trendingLinks.map((link, index) => (
+                        <a 
+                            key={index} 
+                            href={link.url} 
+                            target="_blank" 
+                            className={`relative overflow-hidden rounded-2xl p-5 shadow-lg transition-transform hover:-translate-y-1 group cursor-pointer ${link.color} text-white`}
+                        >
+                            <div className="relative z-10 flex flex-col h-full justify-between">
+                                <div>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h4 className="font-bold text-lg">{link.name}</h4>
+                                        <Icons.ExternalLink />
+                                    </div>
+                                    <p className="text-white/80 text-xs font-medium">{link.desc}</p>
+                                </div>
+                                <div className="mt-4 bg-white/20 backdrop-blur-sm rounded-lg py-2 px-3 text-center text-xs font-bold">
+                                    Listeyi Gör &rarr;
+                                </div>
+                            </div>
+                            {/* Arka Plan Süslemesi */}
+                            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full"></div>
+                        </a>
+                    ))}
+                </div>
+
+                {/* Popüler Platformlar (Kısayollar) */}
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1">Platform Kısayolları</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
                     {[
                         { name: "Thingiverse", url: "https://www.thingiverse.com", color: "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300" },
                         { name: "Printables", url: "https://www.printables.com", color: "bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300" },
-                        { name: "MakerWorld", url: "https://makerworld.com", color: "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300" }
+                        { name: "MakerWorld", url: "https://makerworld.com", color: "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300" },
+                        { name: "Cults3D", url: "https://cults3d.com", color: "bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300" },
+                        { name: "MyMiniFactory", url: "https://www.myminifactory.com", color: "bg-slate-50 text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300" },
+                        { name: "Thangs", url: "https://thangs.com", color: "bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-300" }
                     ].map((site) => (
                         <a key={site.name} href={site.url} target="_blank" className={`${site.color} p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer group`}>
                             <Icons.Globe />
                             <span className="font-semibold text-sm">{site.name}</span>
                             <Icons.ExternalLink />
-                        </a>
-                    ))}
-                </div>
-
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1 flex items-center justify-between">
-                    <span>Demirbaş Modeller</span>
-                    <span className="text-xs font-normal text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-2 py-1 rounded-md">Editörün Seçimi</span>
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {topModels.map(model => (
-                        <a key={model.id} href={model.url} target="_blank" className="bg-white dark:bg-dark-card rounded-2xl p-3 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all group">
-                            <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-xl mb-3 overflow-hidden relative">
-                                <img src={model.img} alt={model.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                     onError={(e) => {e.target.src = 'https://placehold.co/400x400/1e293b/475569?text=Model';}} />
-                                <span className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded-full">
-                                    {model.tag}
-                                </span>
-                            </div>
-                            <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{model.name}</h4>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{model.author}</p>
                         </a>
                     ))}
                 </div>
